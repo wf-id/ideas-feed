@@ -28,6 +28,7 @@ type Post struct {
 	Title     string
 	Published time.Time
 	Host      string
+	Description string
 }
 
 var (
@@ -37,7 +38,7 @@ var (
 	}
 
 	// Show up to 60 days of posts
-	relevantDuration = 60 * 24 * time.Hour
+	relevantDuration = 90 * 24 * time.Hour
 
 	outputDir  = "docs" // So we can host the site on GitHub Pages
 	outputFile = "index.html"
@@ -132,6 +133,7 @@ func getPosts(ctx context.Context, feedURL string, posts chan *Post) {
 			Title:     item.Title,
 			Published: *published,
 			Host:      parsedLink.Host,
+			Description: item.Description,
 		}
 		posts <- post
 	}
@@ -145,7 +147,7 @@ func executeTemplate(writer io.Writer, templateData *TemplateData) error {
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Michael DeWitt | Feed</title>
+		<title>IDEAS | Feed</title>
 		<style>
 			@import url("https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap");
 
@@ -165,10 +167,10 @@ func executeTemplate(writer io.Writer, templateData *TemplateData) error {
 	</head>
 	<body>
 	<P></P><cite><a href="https://wakeforestid.com/">home</a></cite>
-		<h1>News</h1>
+		<h1>Latest Literature</h1>
 
 		<ol>
-			{{ range .Posts }}<li><a href="{{ .Link }}">{{ .Title }}</a> ({{ .Host }})</li>
+			{{ range .Posts }}<li><a href="{{ .Link }}">{{ .Title }}<p>{{ .Description}}</p></a> ({{ .Host }})</li>
 			{{ end }}
 		</ol>
 
