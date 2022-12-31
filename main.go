@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/mmcdole/gofeed"
+	"github.com/grokify/html-strip-tags-go" 
 )
 
 var (
@@ -118,6 +119,7 @@ func getPosts(ctx context.Context, feedURL string, posts chan *Post) {
 
 	for _, item := range feed.Items {
 		published := item.PublishedParsed
+		Description := strip.StripTags(item.Description)
 		if published == nil {
 			published = item.UpdatedParsed
 		}
@@ -133,7 +135,7 @@ func getPosts(ctx context.Context, feedURL string, posts chan *Post) {
 			Title:     item.Title,
 			Published: *published,
 			Host:      parsedLink.Host,
-			Description: item.Description,
+			Description: Description,
 		}
 		posts <- post
 	}
@@ -170,7 +172,7 @@ func executeTemplate(writer io.Writer, templateData *TemplateData) error {
 		<h1>Latest Literature</h1>
 
 		<ol>
-			{{ range .Posts }}<li><a href="{{ .Link }}">{{ .Title }}<p>{{ .Description}}</p></a> ({{ .Host }})</li>
+			{{ range .Posts }}<li><a href="{{ .Link }}">{{ .Title }}</a><p>{{ .Description }}</p> ({{ .Host }})</li>
 			{{ end }}
 		</ol>
 
