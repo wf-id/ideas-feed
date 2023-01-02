@@ -28,5 +28,6 @@ const content = {
     return jsonToBibtex(JSON.stringify(content), "references");
     }
 
-    console.log(useEffect(content));
+console.log(useEffect(content));
+document.onload = useEffect(content);
 
