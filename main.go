@@ -276,6 +276,8 @@ for (var i = 0; i < btns.length; i++) {
 		<button class="btn" onclick="filterSelection('std')"> STD</button>
 		<button class="btn" onclick="filterSelection('surveillance')"> Surveillance</button>
 		<button class="btn" onclick="filterSelection('modelling')"> Modelling</button>
+		<button class="btn" onclick="filterSelection('viral')"> Viral</button>
+		<button class="btn" onclick="filterSelection('omics')"> Omics and Biomarkers</button>
 		</div>
 
 		<div class="container">
