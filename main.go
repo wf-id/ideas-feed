@@ -262,20 +262,20 @@ for (var i = 0; i < btns.length; i++) {
     this.className += " active";
   });
 }
-
 		</script>
 	</head>
 	<body>
 	<P></P><cite><a href="https://wakeforestid.com/">home</a></cite>
 		<h1>Latest Literature</h1>
 		<div id="myBtnContainer">
-		<button class="btn active" onclick="filterSelection('all')"> Show all</button>
-		<button class="btn" onclick="filterSelection('amr')"> AMR</button>
+		<button class="btn active" id="al2l" onclick="filterSelection('all')"> Show all</button>
+		<button class="btn" id="all" onclick="filterSelection('amr')"> AMR</button>
 		<button class="btn" onclick="filterSelection('fungal')"> Fungal</button>
 		<button class="btn" onclick="filterSelection('vector')"> Vector</button>
 		<button class="btn" onclick="filterSelection('bacteria')"> Bacterial</button>
 		<button class="btn" onclick="filterSelection('std')"> STD</button>
 		<button class="btn" onclick="filterSelection('surveillance')"> Surveillance</button>
+		<button class="btn" onclick="filterSelection('modelling')"> Modelling</button>
 		</div>
 
 		<div class="container">
@@ -286,7 +286,9 @@ for (var i = 0; i < btns.length; i++) {
 			{{ end }}
 		</ol>
 		</div>
-
+		<script>
+		filterSelection("all")
+		</script>
 		
 
 		<footer>
