@@ -178,7 +178,7 @@ func executeTemplate(writer io.Writer, templateData *TemplateData) error {
 		
 
 		<footer>
-		    <p><a href="https://raw.githubusercontent.com/wf-id/ideas-feed/main/docs/bibliography.bibtex" download>Download this bibliography</a></p>
+		    <p><a href="https://feed.wakeforestid.com/bibliography.bibtex" download>Download this bibliography</a></p>
 		        <p><a href="https://github.com/wf-id/ideas-feed">What is this?</a></p>
 			<p><a href="https://github.com/jamesroutley/news.routley.io">What is this based on</a></p>
 			<p><a href="https://wakeforestid.com">Main Website</a></p>
