@@ -272,13 +272,15 @@ for (var i = 0; i < btns.length; i++) {
 		<button class="btn active" onclick="filterSelection('all')"> Show all</button>
 		<button class="btn" onclick="filterSelection('amr')"> AMR</button>
 		<button class="btn" onclick="filterSelection('fungal')"> Fungal</button>
+		<button class="btn" onclick="filterSelection('vector')"> Vector</button>
+		<button class="btn" onclick="filterSelection('bacteria')"> Bacterial</button>
 		<button class="btn" onclick="filterSelection('std')"> STD</button>
 		<button class="btn" onclick="filterSelection('surveillance')"> Surveillance</button>
 		</div>
 
 		<div class="container">
 		<ol>
-			{{ range .Posts }}<div class="filterDiv {{ .Taglist}}">
+			{{ range .Posts }}<div class="filterDiv all {{ .Taglist}}">
 			  <li><a href="{{ .Link }}">{{ .Title }}</a><p>{{ .Description }}</p> ({{ .Host }})</li>
 			  </div>
 			{{ end }}
