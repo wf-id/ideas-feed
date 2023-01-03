@@ -12,8 +12,8 @@ import (
 	"text/template"
 	"time"
 
+	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/mmcdole/gofeed"
-	"github.com/grokify/html-strip-tags-go" 
 )
 
 var (
@@ -25,17 +25,16 @@ type TemplateData struct {
 }
 
 type Post struct {
-	Link      string
-	Title     string
-	Published time.Time
-	Host      string
+	Link        string
+	Title       string
+	Published   time.Time
+	Host        string
 	Description string
 }
 
 var (
 	feeds = []string{
 		"https://www.inoreader.com/stream/user/1005349717/tag/save",
-		
 	}
 
 	// Show up to 60 days of posts
@@ -131,10 +130,10 @@ func getPosts(ctx context.Context, feedURL string, posts chan *Post) {
 			log.Println(err)
 		}
 		post := &Post{
-			Link:      item.Link,
-			Title:     item.Title,
-			Published: *published,
-			Host:      parsedLink.Host,
+			Link:        item.Link,
+			Title:       item.Title,
+			Published:   *published,
+			Host:        parsedLink.Host,
 			Description: Description,
 		}
 		posts <- post
@@ -176,7 +175,10 @@ func executeTemplate(writer io.Writer, templateData *TemplateData) error {
 			{{ end }}
 		</ol>
 
+		
+
 		<footer>
+		    <p><a href="https://raw.githubusercontent.com/wf-id/ideas-feed/main/docs/bibliography.bibtex" download></p>
 		        <p><a href="https://github.com/wf-id/ideas-feed">What is this?</a></p>
 			<p><a href="https://github.com/jamesroutley/news.routley.io">What is this based on</a></p>
 			<p><a href="https://wakeforestid.com">Main Website</a></p>
