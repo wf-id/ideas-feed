@@ -42,7 +42,7 @@ jobs:
     - name: Run bibliography creator
       run: |
         python create-bibtex.py
-        mv test.bibtex docs/test.bibtex
+        mv bibliography.bibtex docs/bibliography.bibtex
 
     - name: Commit changes
       uses: stefanzweifel/git-auto-commit-action@v4
@@ -54,4 +54,4 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: Build website (automatic)
-        file_pattern: docs/test.bibtex
+        file_pattern: docs/bibliography.bibtex
