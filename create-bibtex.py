@@ -1,14 +1,24 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Utilise zotero to establish meta-information and create bibtext file
 """
 import requests
 import json
-
+import feedparser
+import time 
 '''
 Use this website to parse the curl calls <https://curlconverter.com/python/>
 '''
+
+
+feed = feedparser.parse("https://www.inoreader.com/stream/user/1005349717/tag/save")
+
+links = []
+
+for entry in feed.entries:
+    links.append(entry.link)
+    print(entry.link)
 
 headers = {
     'authority': 't0guvf0w17.execute-api.us-east-1.amazonaws.com',
@@ -26,9 +36,19 @@ headers = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
 }
 
-data = 'https://www.nature.com/articles/s41569-021-00665-7'
-
-response = requests.post('https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod/web', headers=headers, data=data, verify= False)
+for i in links:
+    data = i
+    time.sleep(3)
+    r = requests.post('https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod/web', headers=headers, data=data)
+    try:
+        try:
+            outinfo
+        except NameError:
+            outinfo = r.json()
+        else:
+            outinfo = outinfo + r.json()
+    except:
+        pass
 
 
 headers = {
@@ -50,14 +70,17 @@ headers = {
 params = {
     'format': 'bibtex',
 }
-response.content
 
-json_data = response.json()
+
+json_data = outinfo
 
 response = requests.post(
     'https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod/export',
     params=params,
     headers=headers,
-    json=json_data,
-    verify= False
+    json=json_data
 )
+
+with open("bibliography.bibtex", "wb") as binary_file:
+    # Write bytes to file
+    binary_file.write(response.content)

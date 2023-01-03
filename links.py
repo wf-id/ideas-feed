@@ -1,6 +1,7 @@
 import feedparser
 import requests
 import json
+import curlify
 
 feed = feedparser.parse("https://www.inoreader.com/stream/user/1005349717/tag/save")
 
@@ -29,14 +30,14 @@ headers = {
   'sec-fetch-site': 'cross-site' ,
   'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36' 
 }
-
+links = links[0]
 outinfo = []
 for link in links:
-    body = {'data-raw': link, "compressed": "true" }
+    body = {'data-raw': link}
     r = requests.post(url, data=body, headers=headers)
     if r.status_code == 200 :
       outinfo = outinfo + json.loads(r.content.decode("utf-8"))
-
+print(curlify.to_curl(r.request))
 print(outinfo)
 
 with open('bibinfo.json', 'w') as out_file:
