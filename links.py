@@ -11,7 +11,7 @@ for entry in feed.entries:
     print(entry.link)
 
 
-url = 'https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod/web';
+url = 'https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod/web'
 
 headers = {
 
@@ -31,10 +31,13 @@ headers = {
 }
 
 outinfo = []
-for i in range(0):
-    body = {'data-raw': links[0] }
+for link in links:
+    body = {'data-raw': link, "compressed": "true" }
     r = requests.post(url, data=body, headers=headers)
-    outinfo = outinfo + json.loads(r.content.decode("utf-8"))
+    if r.status_code == 200 :
+      outinfo = outinfo + json.loads(r.content.decode("utf-8"))
+
+print(outinfo)
 
 with open('bibinfo.json', 'w') as out_file:
      json.dump(outinfo, out_file, sort_keys = True, indent = 4,
@@ -62,6 +65,8 @@ headers2 = {
 
 outinfo = str(outinfo).replace("'", '"')
 
-body2 = {'data-raw': outinfo }
+body2 = {'data-raw': json.dumps(outinfo) }
 
 r = requests.post(url2, data=body2, headers=headers2)
+
+r.content
