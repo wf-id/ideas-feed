@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"net/url"
 	"os"
 	"path"
 	"sort"
+	"strings"
 	"sync"
 	"text/template"
 	"time"
@@ -30,6 +32,7 @@ type Post struct {
 	Published   time.Time
 	Host        string
 	Description string
+	Taglist     string
 }
 
 var (
@@ -107,6 +110,12 @@ func getAllPosts(ctx context.Context, feeds []string) []*Post {
 	return posts
 }
 
+func mycombine(is ...string) {
+	for i := 0; i < len(is); i++ {
+		fmt.Println(is[i])
+	}
+}
+
 func getPosts(ctx context.Context, feedURL string, posts chan *Post) {
 	defer wg.Done()
 	parser := gofeed.NewParser()
@@ -129,12 +138,16 @@ func getPosts(ctx context.Context, feedURL string, posts chan *Post) {
 		if err != nil {
 			log.Println(err)
 		}
+
+		categoryStart := strings.Join(item.Categories[:], " ")
+
 		post := &Post{
 			Link:        item.Link,
 			Title:       item.Title,
 			Published:   *published,
 			Host:        parsedLink.Host,
 			Description: Description,
+			Taglist:     categoryStart,
 		}
 		posts <- post
 	}
@@ -164,22 +177,121 @@ func executeTemplate(writer io.Writer, templateData *TemplateData) error {
 			li {
 				padding-bottom: 16px;
 			}
+			.container {
+				overflow: hidden;
+			  }
+			  
+			  .filterDiv {
+				float: left;
+				width: 100%;
+				text-align: left;
+				margin: 2px;
+				display: none; /* Hidden by default */
+			  }
+			  
+			  /* The "show" class is added to the filtered elements */
+			  .show {
+				display: block;
+			  }
+			  
+			  /* Style the buttons */
+			  .btn {
+				border: none;
+				outline: none;
+				padding: 12px 16px;
+				background-color: #f1f1f1;
+				cursor: pointer;
+			  }
+			  
+			  /* Add a light grey background on mouse-over */
+			  .btn:hover {
+				background-color: #ddd;
+			  }
+			  
+			  /* Add a dark background to the active button */
+			  .btn.active {
+				background-color: #666;
+				color: white;
+			  }
 		</style>
+		<script>
+		filterSelection("all")
+function filterSelection(c) {
+  var x, i;
+  x = document.getElementsByClassName("filterDiv");
+  if (c == "all") c = "";
+  // Add the "show" class (display:block) to the filtered elements, and remove the "show" class from the elements that are not selected
+  for (i = 0; i < x.length; i++) {
+    w3RemoveClass(x[i], "show");
+    if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+  }
+}
+
+// Show filtered elements
+function w3AddClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    if (arr1.indexOf(arr2[i]) == -1) {
+      element.className += " " + arr2[i];
+    }
+  }
+}
+
+// Hide elements that are not selected
+function w3RemoveClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    while (arr1.indexOf(arr2[i]) > -1) {
+      arr1.splice(arr1.indexOf(arr2[i]), 1);
+    }
+  }
+  element.className = arr1.join(" ");
+}
+
+// Add active class to the current control button (highlight it)
+var btnContainer = document.getElementById("myBtnContainer");
+var btns = btnContainer.getElementsByClassName("btn");
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function() {
+    var current = document.getElementsByClassName("active");
+    current[0].className = current[0].className.replace(" active", "");
+    this.className += " active";
+  });
+}
+
+		</script>
 	</head>
 	<body>
 	<P></P><cite><a href="https://wakeforestid.com/">home</a></cite>
 		<h1>Latest Literature</h1>
+		<div id="myBtnContainer">
+		<button class="btn active" onclick="filterSelection('all')"> Show all</button>
+		<button class="btn" onclick="filterSelection('amr')"> AMR</button>
+		<button class="btn" onclick="filterSelection('fungal')"> Fungal</button>
+		<button class="btn" onclick="filterSelection('std')"> STD</button>
+		<button class="btn" onclick="filterSelection('surveillance')"> Surveillance</button>
+		</div>
 
+		<div class="container">
 		<ol>
-			{{ range .Posts }}<li><a href="{{ .Link }}">{{ .Title }}</a><p>{{ .Description }}</p> ({{ .Host }})</li>
+			{{ range .Posts }}<div class="filterDiv {{ .Taglist}}">
+			  <li><a href="{{ .Link }}">{{ .Title }}</a><p>{{ .Description }}</p> ({{ .Host }})</li>
+			  </div>
 			{{ end }}
 		</ol>
+		</div>
 
 		
 
 		<footer>
 		    <p><a href="https://feed.wakeforestid.com/bibliography.bibtex" download>Download this bibliography</a></p>
-		        <p><a href="https://github.com/wf-id/ideas-feed">What is this?</a></p>
+		    <p><a href="https://github.com/wf-id/ideas-feed">What is this?</a></p>
+			<p><a href="https://www.zotero.org/groups/4900647/ideas-feed/library">Zotero Library</a></p>
+			<p><a href="https://www.researchrabbit.ai/">Research Rabbit</a></p>
 			<p><a href="https://github.com/jamesroutley/news.routley.io">What is this based on</a></p>
 			<p><a href="https://wakeforestid.com">Main Website</a></p>
 		</footer>
