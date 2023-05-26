@@ -41,7 +41,7 @@ var (
 	}
 
 	// Show up to 60 days of posts
-	relevantDuration = 90 * 24 * time.Hour
+	relevantDuration = 180 * 24 * time.Hour
 
 	outputDir  = "docs" // So we can host the site on GitHub Pages
 	outputFile = "index.html"
